@@ -14,6 +14,7 @@ const isDate = (date, datePattern) => {
 
 $( document ).ready( () => {
 
+    // deal with the click on the sale button
     $( "#save" ).click( () => {
         // if there is a previous error message clear it
         
