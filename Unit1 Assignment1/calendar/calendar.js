@@ -16,9 +16,38 @@ const getMonthText = currentMonth => {
 };
 
 const getLastDayofMonth = currentMonth => {
-
+	const datetime = new Date();
+	datetime.setMonth(currentMonth+1);
+	datetime.setDate(0);
+	return datetime.getDate();
+	
 };
 
 $(document).ready(function(){
+		// get todays date, and the current month
+		const today = new Date();
+		const thisMonth = today.getMonth();
 
+		// display month and year
+		$("#month_year").text(`${getMonthText(thisMonth)}  ${today.getFullYear()}`);
+
+		const lastDayofMonth = getLastDayofMonth(thisMonth);
+		
+		// grab info in calender block (first table row)
+		let rows = $("#calendar").html();
+		// loop through the days of the month and add to the calendar
+		for (let i=0; i<lastDayofMonth; i++){
+			//  use date object to finish 
+			if ((i+1) % 7 ===1){
+				rows += '<tr>';
+			}
+
+			rows +=`<td>${i+1}</td>`
+
+			if ((i+1)%7 === 0){
+				rows += '</tr>';
+			}
+		}
+
+		$("#calendar").html(rows);
 });
