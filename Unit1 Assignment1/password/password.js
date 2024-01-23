@@ -16,6 +16,27 @@ $(document).ready( () => {
     
         const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_-+!@";
         
+        // initialize password variable
+        let password="";
+
+        // get input
+        const num = parseInt( $("#num").val() );
+        // check for valid input
+        if ( isNaN(num) || num < 5 || num > 64){
+            alert("Please enter a valid number");
+        }else{
+            // loop the number of times specified for the characters (the num variable)
+            for (let i = 0; i < num; i++){
+                const start = getRandomNumber(chars.length);
+                const stop = start +1;
+                const char = chars.substring(start,stop);
+
+                // add the character to the password string (a random character)
+                password += char;
+            }
+            // display the password
+            $("#password").val(password);
+        }
     }); // end click()
     
     $("#clear").click( () => {
