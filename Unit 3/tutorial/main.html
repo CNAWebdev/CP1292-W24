@@ -22,7 +22,8 @@
   <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
   <script>
         // if the back button is clicked go back using the history object
-      
+      $("#back").click( () => history.back() );
+        // you could wrap this in $(document).ready( ... )
   </script>
 </body>
 </html>
