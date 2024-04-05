@@ -20,7 +20,7 @@ $(document).ready( () => {
         // make sure date  is valid
         if (dateObj == "Invalid Date"){
             const msg = "Please enter valid date in YYYY-MM-DD foramt.";
-            displayError(new Error(msg));
+            displayError(new Error( msg ));
             // $("#display").html(`<span class="error">${msg}</span`);
         }else{
 
