@@ -49,23 +49,87 @@ const createCardsHtml = (cards, backSrc) => {
         html = "<div>"; // opens the first div tag
         // randomize the card here in the furtre
         while (counter < 8) { // create 8 cards total
-            html += `<a id="${cards[counter]}" href="#"><img src="${cards[counter]}" alt=""></a>`;
+            html += `<a id="${cards[counter]}" href="#"><img src="images/back.png" alt=""></a>`;
             counter++;
         }
-        html +="</div>"; //closes the div tag
+        html += "</div>"; //closes the div tag
 
     }
     return html;
 }
 
-$(document).ready( ()=> {
+$(document).ready(() => {
     // $("#tabs").tab();
+
+    //initialize variables
+    let selection = 0;
+    let isOkToClick = false;
+    let firstCard = null;
+    let secondCard = null;
+    const flippedcard = [];
+
     // preloading the images
     const images = preLoadAndStoreImages();
     // building our deck
-    const cards = storeCardsSrc( images );
+    const cards = storeCardsSrc(images);
     // getting our html
-    const html = createCardsHtml( cards,"images/back.png" );
+    const html = createCardsHtml(cards, "images/back.png");
     // displaying the html
-    $("#cards").html( html );
+    $("#cards").html(html);
+
+    $("#cards").find("a").each((index, a) => {
+        $(a).click((evt) => {
+            evt.preventDefault();
+            // disable flipping when 2 cards have been selected
+            if (selection >= 2) {
+                return;
+            }
+            const a = $(evt.currentTarget);
+
+
+            // flip card
+
+            // storing our first and second card for checking against each other
+            if (selection === 0) {
+                firstCard = a.attr("id");
+            } else if (selection === 1) {
+                secondCard = a.attr("id");
+            }
+            // mark that first card is flipped
+            const img = $(a.find("img")[0]);
+            
+            // alert(img.attr("src"));
+            if (img.attr("src")!=="images/back.png"){
+                return;
+            } // disable flip of this card
+            img.attr("src",a.attr("id")); // flips the card
+            flippedcard.push(img);
+            selection++;
+
+            //wait for 2nd card to be flipped
+            // once 2nd card if flipped
+
+            // check if 2 cards are the same
+            if (selection === 2){
+                if (firstCard === secondCard) {
+                    alert("its a match!");
+                    // count the match
+                    // remove cards from board
+                }else{
+                    // flip cards back
+                   // flippedcard[0].attr("src","images/back.png"); // flips the card back
+                    //flippedcard[1].attr("src","images/back.png"); // flips the card back
+                    flippedcard.pop().attr("src","images/back.png"); // flips the card back;
+                    flippedcard.pop().attr("src","images/back.png"); // flips the card back;
+                    alert("no match!");
+                }
+                selection = 0;
+                
+            }
+            // if not flip the cards back over
+
+            // if they are match then increase our count, and remove cards
+
+        });
+});
 })
