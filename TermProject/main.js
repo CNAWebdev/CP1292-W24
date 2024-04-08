@@ -11,7 +11,7 @@ const preLoadAndStoreImages = () => {
     const images = [];
 
     // get the number of images to store
-    const numberOfImages = 4; // you can use getNumberOfImages()
+    const numberOfImages = 24; // you can use getNumberOfImages()
 
     // preload the images into the array
     for (let i = 1; i <= numberOfImages; i++) {
@@ -22,6 +22,13 @@ const preLoadAndStoreImages = () => {
     return images;
 }
 
+const revealCardFlip = (img, newSrc, duration) => {
+    img.slideUp(duration, () => img.attr("src", newSrc).fadeIn(duration));
+}
+
+const fadeCardFlip = (img, newSrc, duration) => {
+    img.fadeOut(duration, () => img.attr("src", newSrc).fadeIn(duration));
+}
 
 const storeCardsSrc = (images) => {
     const srcs = [];
@@ -40,19 +47,23 @@ const createCardsHtml = (cards, backSrc) => {
     let counter = 0;
 
     // initialze other variables
-    let CardIndex = 0;
+    let cardIndex = 0;
     let src = "";
     let html = "";
 
     // create the cards Html
     if (Array.isArray(cards)) {
-        html = "<div>"; // opens the first div tag
+       // html = "<div>"; // opens the first div tag
         // randomize the card here in the furtre
-        while (counter < 8) { // create 8 cards total
-            html += `<a id="${cards[counter]}" href="#"><img src="images/back.png" alt=""></a>`;
+        while (cards.length >0 ) { // create 8 cards total
+            cardIndex = Math.floor(Math.random()* cards.length);
+            src = cards[cardIndex];
+            // remove the card from the list of cards
+            cards.splice(cardIndex,1);
+            html += `<a id="${src}" href="#"><img src="${backSrc}" alt=""></a>`;
             counter++;
         }
-        html += "</div>"; //closes the div tag
+       // html += "</div>"; //closes the div tag
 
     }
     return html;
@@ -63,7 +74,7 @@ $(document).ready(() => {
 
     //initialize variables
     let selection = 0;
-    let isOkToClick = false;
+    let isOkToClick = true;
     let firstCard = null;
     let secondCard = null;
     const flippedcard = [];
@@ -81,7 +92,7 @@ $(document).ready(() => {
         $(a).click((evt) => {
             evt.preventDefault();
             // disable flipping when 2 cards have been selected
-            if (selection >= 2) {
+            if (selection >= 2 || !isOkToClick) {
                 return;
             }
             const a = $(evt.currentTarget);
@@ -97,12 +108,14 @@ $(document).ready(() => {
             }
             // mark that first card is flipped
             const img = $(a.find("img")[0]);
-            
+
             // alert(img.attr("src"));
-            if (img.attr("src")!=="images/back.png"){
+            if (img.attr("src") !== "images/back.png") {
                 return;
             } // disable flip of this card
-            img.attr("src",a.attr("id")); // flips the card
+            //img.attr("src",a.attr("id")); // flips the card
+            // call card flip reveal
+            fadeCardFlip(img, a.attr("id"), 500); // .5 second duration
             flippedcard.push(img);
             selection++;
 
@@ -110,26 +123,37 @@ $(document).ready(() => {
             // once 2nd card if flipped
 
             // check if 2 cards are the same
-            if (selection === 2){
+            if (selection === 2) {
+                isOkToClick =false;
                 if (firstCard === secondCard) {
-                    alert("its a match!");
+                    // alert("its a match!");
                     // count the match
                     // remove cards from board
-                }else{
+                    setTimeout(() => {
+                        fadeCardFlip(flippedcard.pop(), "images/blank.png", 500);
+                        fadeCardFlip(flippedcard.pop(), "images/blank.png", 500);
+                        isOkToClick=true;
+                    }, 2000);
+                } else {
                     // flip cards back
-                   // flippedcard[0].attr("src","images/back.png"); // flips the card back
+                    // flippedcard[0].attr("src","images/back.png"); // flips the card back
                     //flippedcard[1].attr("src","images/back.png"); // flips the card back
-                    flippedcard.pop().attr("src","images/back.png"); // flips the card back;
-                    flippedcard.pop().attr("src","images/back.png"); // flips the card back;
-                    alert("no match!");
+                    // flippedcard.pop().attr("src","images/back.png"); // flips the card back;
+                    // flippedcard.pop().attr("src","images/back.png"); // flips the card back;
+                    setTimeout(() => {
+                        fadeCardFlip(flippedcard.pop(), "images/back.png", 500);
+                        fadeCardFlip(flippedcard.pop(), "images/back.png", 500);
+                        isOkToClick=true;
+                    }, 2000);
+                    //  alert("no match!");
                 }
                 selection = 0;
-                
+
             }
             // if not flip the cards back over
 
             // if they are match then increase our count, and remove cards
 
         });
-});
+    });
 })
